@@ -72,19 +72,35 @@ namespace LuccaDevises
         }
         static void Main(string[] args)
         {
-            string[] firstArgs = args[0].Split(';');
+
+            if (args == null || args.Length == 0)
+            {
+                Console.WriteLine("This has no argument");
+                Console.ReadKey();
+                return;
+            }
+
+            StreamReader src = new StreamReader(args[0]);
+            List<string> arguments = new List<string>();
+            while (!src.EndOfStream)
+            {
+                string line = src.ReadLine();
+                arguments = line.Split(' ').ToList();
+            }
+
+            string[] firstArgs = arguments[0].Split(';');
             string start = firstArgs[0];
             decimal amount = decimal.Parse(firstArgs[1], System.Globalization.CultureInfo.InvariantCulture);
             string end = firstArgs[2];
 
-            Int32 devisesTabLength = Int32.Parse(args[1]);
+            Int32 devisesTabLength = Int32.Parse(arguments[1]);
             string[][] devisesTab = new string[devisesTabLength][];
 
             var vertices = new List<string>();
             var edges = new List<Tuple<string, string>>();
             for (int i = 0; i < devisesTabLength; i++)
             {
-                devisesTab[i] = args[i + 2].Split(";").ToArray();
+                devisesTab[i] = arguments[i + 2].Split(";").ToArray();
                 vertices.Add(devisesTab[i][0]);
                 vertices.Add(devisesTab[i][1]);
                 edges.Add(Tuple.Create(devisesTab[i][0], devisesTab[i][1]));
