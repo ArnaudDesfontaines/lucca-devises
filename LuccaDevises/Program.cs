@@ -74,7 +74,7 @@ namespace LuccaDevises
         {
             string[] firstArgs = args[0].Split(';');
             string start = firstArgs[0];
-            Double initialAmount = Double.Parse(firstArgs[1]);
+            decimal amount = decimal.Parse(firstArgs[1], System.Globalization.CultureInfo.InvariantCulture);
             string end = firstArgs[2];
 
             Int32 devisesTabLength = Int32.Parse(args[1]);
@@ -97,10 +97,23 @@ namespace LuccaDevises
             var shortestPath = algorithms.ShortestPathFunction(graph, start, end);
 
             Console.WriteLine(string.Join(", ", shortestPath));
+            decimal changeRate = 1;
 
-            /*test2.ForEach(i => Console.WriteLine(i[0]));*/
+            for (int i = 0; i < shortestPath.Count - 1; i++)
+            {
+                 var conversionTab = devisesTab.FirstOrDefault(d => d[0] == shortestPath[i] && d[1] == shortestPath[i + 1]);
+                if (conversionTab != null)
+                    changeRate = Math.Round(changeRate * decimal.Parse(conversionTab[2], System.Globalization.CultureInfo.InvariantCulture), 4);
+                else
+                {
+                    conversionTab = devisesTab.FirstOrDefault(d => d[1] == shortestPath[i] && d[0] == shortestPath[i + 1]);
+                    if (conversionTab != null)
+                        changeRate = Math.Round(changeRate * 1 / decimal.Parse(conversionTab[2], System.Globalization.CultureInfo.InvariantCulture), 4);
+                    else throw new Exception("Information insuffisante pour permettre le calcul du changement de devise");
+                }
+            }
 
-            /*var vertices = new[] { devisesTab.Select(i => i.Split(";")) }*/
+            Console.WriteLine(Convert.ToInt32(amount * changeRate));
 
         }
     }
