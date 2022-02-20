@@ -96,7 +96,6 @@ namespace LuccaDevises
 
             var shortestPath = algorithms.ShortestPathFunction(graph, start, end);
 
-            Console.WriteLine(string.Join(", ", shortestPath));
             decimal changeRate = 1;
 
             for (int i = 0; i < shortestPath.Count - 1; i++)
@@ -108,12 +107,12 @@ namespace LuccaDevises
                 {
                     conversionTab = devisesTab.FirstOrDefault(d => d[1] == shortestPath[i] && d[0] == shortestPath[i + 1]);
                     if (conversionTab != null)
-                        changeRate = Math.Round(changeRate * 1 / decimal.Parse(conversionTab[2], System.Globalization.CultureInfo.InvariantCulture), 4);
+                        changeRate = changeRate * Math.Round(1 / decimal.Parse(conversionTab[2], System.Globalization.CultureInfo.InvariantCulture), 4);
                     else throw new Exception("Information insuffisante pour permettre le calcul du changement de devise");
                 }
             }
 
-            Console.WriteLine(Convert.ToInt32(amount * changeRate));
+            Console.WriteLine(Math.Round(amount * changeRate));
 
         }
     }
